@@ -1,0 +1,27 @@
+version: '3.0'
+
+volumes:
+  db-data:
+    driver: local
+
+services:
+  analyser:
+    image: 303stanislav303/data-analyser-microservice:latest
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_SUBSCRIBED_TOPICS=${KAFKA_SUBSCRIBED_TOPICS}
+      - HOST=${HOST}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '8082:8082'
+
+  postgres:
+    image: 'postgres:15.1-alpine'
+    env_file:
+      - .env
+    ports:
+      - '5437:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
